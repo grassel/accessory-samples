@@ -198,12 +198,14 @@ public class MainActivity extends Activity implements BluetoothAdapter.LeScanCal
         mBluetoothAdapter.startLeScan(this);
         setProgressBarIndeterminateVisibility(true);
 
-        mHandler.postDelayed(mStopRunnable, 2500);
+        mHandler.postDelayed(mStopRunnable, 10 * 1000); // scan for 20 sec
+        Log.i(TAG, "scan has started");
     }
 
     private void stopScan() {
         mBluetoothAdapter.stopLeScan(this);
         setProgressBarIndeterminateVisibility(false);
+        Log.i(TAG, "scan has stopped");
     }
 
     /* BluetoothAdapter.LeScanCallback */
@@ -211,6 +213,14 @@ public class MainActivity extends Activity implements BluetoothAdapter.LeScanCal
     @Override
     public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
         Log.i(TAG, "New LE Device: " + device.getName() + " @ " + rssi);
+
+
+        String scanRecordHex = "";
+        for (int i=0; i<scanRecord.length; i++) {
+            scanRecordHex += String.format("%xo ", scanRecord[i]);
+        }
+        Log.i(TAG, "scanrecord=" + scanRecordHex);
+
         /*
          * We are looking for SensorTag devices only, so validate the name
          * that each device reports before adding it to our collection
